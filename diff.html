@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>困難模式 - 垃圾分類</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+        body {
+            background: #1a1a2e;
+            min-height: 100vh;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background: #16213e;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        h1 {
+            color: #e94560;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+        .question {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #0f3460;
+            border-radius: 10px;
+        }
+        .options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .option-btn {
+            background: #e94560;
+            color: #fff;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .option-btn:hover {
+            background: #d13c55;
+            transform: scale(1.05);
+        }
+        .option-btn.selected {
+            background: #4ecdc4;
+            color: #000;
+        }
+        .action-btn {
+            background: #4ecdc4;
+            color: #000;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+        .action-btn:hover {
+            background: #45b7aa;
+        }
+        .back-btn {
+            background: #fca311;
+            color: #000;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin: 0 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .back-btn:hover {
+            background: #e89005;
+        }
+        /* 新增換一題按鈕樣式 */
+        .change-btn {
+            background: #7b2cbf;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin: 0 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .change-btn:hover {
+            background: #6a1b9a;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .correct {
+            background: #2a9d8f;
+            color: #fff;
+        }
+        .wrong {
+            background: #e76f51;
+            color: #fff;
+        }
+        .hint {
+            margin-top: 15px;
+            color: #fca311;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>困難模式：垃圾分類挑戰</h1>
+        <div class="question" id="question">載入題目中...</div>
+        <div class="options">
+            <button class="option-btn" onclick="selectOption('塑膠')">塑膠</button>
+            <button class="option-btn" onclick="selectOption('廢紙')">廢紙</button>
+            <button class="option-btn" onclick="selectOption('金屬')">金屬</button>
+        </div>
+        <div>
+            <button class="action-btn" onclick="checkAnswer()">提交答案</button>
+            <button class="action-btn" onclick="showHint()">提示</button>
+            <!-- 新增換一題按鈕 -->
+            <button class="change-btn" onclick="changeQuestion()">換一題</button>
+            <button class="back-btn" onclick="goBack()">返回首頁</button>
+        </div>
+        <div class="hint" id="hint"></div>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        let currentQuestion = "";
+        let correctType = "";
+        let hintText = "";
+
+        // 加載對應分類的難題庫
+        async function loadQuestion() {
+            const categories = [
+                { file: "diffplastic.txt", type: "塑膠" },
+                { file: "diffpaper.txt", type: "廢紙" },
+                { file: "diffmetal.txt", type: "金屬" }
+            ];
+            const randomCat = categories[Math.floor(Math.random() * categories.length)];
+
+            const response = await fetch(randomCat.file);
+            const content = await response.text();
+            const questions = content.split("\n").filter(q => q.trim() !== "");
+            currentQuestion = questions[Math.floor(Math.random() * questions.length)];
+            correctType = randomCat.type;
+            hintText = `提示：這個垃圾的材質屬於「${correctType}」`;
+
+            document.getElementById("question").textContent = `請問「${currentQuestion}」屬於哪一類垃圾？`;
+        }
+
+        // 選擇選項
+        function selectOption(type) {
+            document.querySelectorAll(".option-btn").forEach(btn => {
+                btn.classList.remove("selected");
+            });
+            event.target.classList.add("selected");
+        }
+
+        // 檢查答案
+        function checkAnswer() {
+            const selectedBtn = document.querySelector(".option-btn.selected");
+            if (!selectedBtn) {
+                alert("請先選擇一個選項哦！");
+                return;
+            }
+            const selectedType = selectedBtn.textContent;
+            const resultEl = document.getElementById("result");
+            resultEl.style.display = "block";
+
+            if (selectedType === correctType) {
+                resultEl.textContent = "答對了！不愧是中學生~👏";
+                resultEl.className = "result correct";
+            } else {
+                resultEl.textContent = `答錯啦~正確分類是「${correctType}」`;
+                resultEl.className = "result wrong";
+            }
+        }
+
+        // 顯示提示
+        function showHint() {
+            document.getElementById("hint").textContent = hintText;
+        }
+
+        // 返回首頁
+        function goBack() {
+            window.location.href = "index.html";
+        }
+
+        // 新增：換一題函數（重置所有狀態 + 加載新題）
+        async function changeQuestion() {
+            // 重置選項選中狀態
+            document.querySelectorAll(".option-btn").forEach(btn => {
+                btn.classList.remove("selected");
+            });
+            // 清空提示和結果
+            document.getElementById("hint").textContent = "";
+            document.getElementById("result").style.display = "none";
+            // 加載新題目
+            await loadQuestion();
+        }
+
+        // 初始化加載題目
+        loadQuestion();
+    </script>
+</body>
+</html>
