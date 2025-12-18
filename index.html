@@ -21,7 +21,6 @@
             align-items: center;
             justify-content: center;
         }
-        /* 雪花背景 */
         .bg-decoration {
             position: fixed;
             width: 100%;
@@ -44,7 +43,6 @@
             90% { opacity: 0.6; }
             100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
         }
-        /* 聖誕裝飾 */
         .christmas-tree {
             position: fixed;
             top: 40px;
@@ -87,7 +85,6 @@
             z-index: 2;
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
         }
-        /* 主容器 */
         .container {
             max-width: 450px;
             background: #ffffff;
@@ -100,7 +97,6 @@
             border: 2px solid #fce3f0;
             overflow: hidden;
         }
-        /* 容器顶部装饰条 */
         .container::before {
             content: "";
             position: absolute;
@@ -110,7 +106,6 @@
             height: 8px;
             background: linear-gradient(90deg, #f472b6 0%, #ec4899 100%);
         }
-        /* 圣诞老人角标 */
         .santa-badge {
             position: absolute;
             top: -15px;
@@ -120,7 +115,6 @@
             filter: drop-shadow(0 4px 4px rgba(0,0,0,0.15));
             z-index: 11;
         }
-        /* 标题样式 */
         h1 {
             color: #be185d;
             margin-bottom: 40px;
@@ -136,7 +130,6 @@
             content: "🎄";
             font-size: 1.6rem;
         }
-        /* 模式按钮 */
         .mode-btn {
             display: block;
             width: 100%;
@@ -154,7 +147,6 @@
             gap: 12px;
             box-shadow: 0 6px 15px rgba(0,0,0,0.1);
         }
-        /* 普通模式按钮 */
         .nor-btn {
             background: linear-gradient(135deg, #16a34a 0%, #0f766e 100%);
         }
@@ -163,7 +155,6 @@
             box-shadow: 0 10px 20px rgba(22, 163, 74, 0.25);
             background: linear-gradient(135deg, #15803d 0%, #0d6e64 100%);
         }
-        /* 困难模式按钮 */
         .diff-btn {
             background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
         }
@@ -172,7 +163,6 @@
             box-shadow: 0 10px 20px rgba(220, 38, 38, 0.25);
             background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
         }
-        /* 垃圾分类图标区 */
         .trash-icons {
             display: flex;
             justify-content: center;
@@ -200,7 +190,6 @@
             margin-top: 10px;
             font-weight: 500;
         }
-        /* 响应式优化 */
         @media (max-width: 768px) {
             .container {
                 width: 95%;
@@ -229,9 +218,7 @@
     </style>
 </head>
 <body>
-    <!-- 背景雪花 -->
     <div class="bg-decoration" id="snow-container"></div>
-    <!-- 聖誕裝飾 -->
     <div class="christmas-tree">🎄</div>
     <div class="christmas-bell">🔔</div>
     <div class="christmas-gift">🎁</div>
@@ -239,14 +226,12 @@
 
     <div class="container">
         <div class="santa-badge">🎅</div>
-
         <h1>垃圾回收站</h1>
-        <!-- 普通模式按钮 -->
-        <button class="mode-btn nor-btn" onclick="window.location.href='/ChristmasGame/nor.html'">
+        <!-- 核心修改：用 ./ 相对路径 -->
+        <button class="mode-btn nor-btn" onclick="window.location.href='./nor.html'">
             ♻️ 普通模式
         </button>
-        <!-- 困难模式按钮 -->
-        <button class="mode-btn diff-btn" onclick="window.location.href='/ChristmasGame/diff.html'">
+        <button class="mode-btn diff-btn" onclick="window.location.href='./diff.html'">
             🗑️ 困難模式
         </button>
 
@@ -258,7 +243,6 @@
     </div>
 
     <script>
-        // 生成雪花
         function createSnowflakes() {
             const snowContainer = document.getElementById('snow-container');
             const snowCount = 70;
