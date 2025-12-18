@@ -3,84 +3,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>垃圾分類挑戰</title>
+    <title>垃圾回收站</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "Comic Sans MS", "幼圆", sans-serif;
+            font-family: "PingFang SC", "Microsoft Yahei", sans-serif;
         }
         body {
-            background: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+            background: linear-gradient(180deg, #fef3f9 0%, #fcf0f7 100%);
             min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
         }
-        h1 {
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            margin-bottom: 40px;
-            font-size: 2.5rem;
+        /* 雪花背景 */
+        .bg-decoration {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            pointer-events: none;
         }
-        .mode-card {
-            background: #fff;
-            border-radius: 15px;
-            padding: 30px;
-            margin: 0 20px;
-            width: 250px;
+        .snowflake {
+            position: absolute;
+            color: #d8b4de;
+            font-size: 14px;
+            opacity: 0.6;
+            animation: snowfall linear infinite;
+        }
+        @keyframes snowfall {
+            0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+        /* 聖誕裝飾 */
+        .christmas-tree {
+            position: fixed;
+            top: 40px;
+            right: 40px;
+            font-size: 60px;
+            z-index: 2;
+            animation: tree-sway 4s ease-in-out infinite;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+        @keyframes tree-sway {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+        .christmas-bell {
+            position: fixed;
+            top: 110px;
+            left: 40px;
+            font-size: 45px;
+            z-index: 2;
+            animation: bell-swing 2.5s ease-in-out infinite;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+        @keyframes bell-swing {
+            0%, 100% { transform: rotate(-12deg); }
+            50% { transform: rotate(12deg); }
+        }
+        .christmas-gift {
+            position: fixed;
+            bottom: 40px;
+            left: 40px;
+            font-size: 50px;
+            z-index: 2;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+        .christmas-sock {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            font-size: 50px;
+            z-index: 2;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+        /* 主容器 */
+        .container {
+            max-width: 450px;
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 50px 35px;
+            box-shadow: 0 15px 40px rgba(255, 145, 163, 0.12);
             text-align: center;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            transition: transform 0.3s;
+            position: relative;
+            z-index: 10;
+            border: 2px solid #fce3f0;
+            overflow: hidden;
         }
-        .mode-card:hover {
-            transform: translateY(-5px);
+        /* 容器顶部装饰条 */
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, #f472b6 0%, #ec4899 100%);
         }
-        .mode-card h2 {
-            color: #ff6b6b;
-            margin-bottom: 15px;
+        /* 圣诞老人角标 */
+        .santa-badge {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            font-size: 45px;
+            transform: rotate(15deg);
+            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.15));
+            z-index: 11;
         }
-        .mode-card p {
-            color: #666;
-            margin-bottom: 20px;
-        }
-        .btn {
-            background: #4ecdc4;
-            color: #fff;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-size: 1rem;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .btn:hover {
-            background: #45b7aa;
-        }
-        .mode-container {
+        /* 标题样式 */
+        h1 {
+            color: #be185d;
+            margin-bottom: 40px;
+            font-size: 2.4rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
             display: flex;
-            flex-wrap: wrap;
+            align-items: center;
             justify-content: center;
+            gap: 12px;
+        }
+        h1::before, h1::after {
+            content: "🎄";
+            font-size: 1.6rem;
+        }
+        /* 模式按钮 */
+        .mode-btn {
+            display: block;
+            width: 100%;
+            margin: 18px 0;
+            padding: 22px 20px;
+            border: none;
+            border-radius: 40px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+        /* 普通模式按钮 */
+        .nor-btn {
+            background: linear-gradient(135deg, #16a34a 0%, #0f766e 100%);
+        }
+        .nor-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(22, 163, 74, 0.25);
+            background: linear-gradient(135deg, #15803d 0%, #0d6e64 100%);
+        }
+        /* 困难模式按钮 */
+        .diff-btn {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        }
+        .diff-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(220, 38, 38, 0.25);
+            background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+        }
+        /* 垃圾分类图标区 */
+        .trash-icons {
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+            margin-top: 35px;
+            padding-top: 25px;
+            border-top: 1px solid #f8eaf3;
+        }
+        .trash-icon {
+            font-size: 38px;
+            animation: float 4s ease-in-out infinite;
+            filter: drop-shadow(0 4px 5px rgba(0,0,0,0.1));
+        }
+        .trash-icon:nth-child(1) { animation-delay: 0s; }
+        .trash-icon:nth-child(2) { animation-delay: 1s; }
+        .trash-icon:nth-child(3) { animation-delay: 2s; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        .trash-icon span {
+            display: block;
+            font-size: 0.95rem;
+            color: #6b7280;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+        /* 响应式优化 */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 40px 25px;
+            }
+            h1 { font-size: 2rem; }
+            .mode-btn {
+                font-size: 1.2rem;
+                padding: 20px 15px;
+            }
+            .christmas-tree {
+                font-size: 50px;
+                right: 25px;
+                top: 30px;
+            }
+            .christmas-bell {
+                font-size: 40px;
+                left: 25px;
+                top: 100px;
+            }
+            .christmas-gift, .christmas-sock {
+                font-size: 45px;
+                bottom: 30px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>垃圾分類挑戰！</h1>
-    <div class="mode-container">
-        <div class="mode-card">
-            <h2>普通模式</h2>
-            <p>適合小學生的簡單題目~</p>
-            <a href="nor.html" class="btn">開始挑戰</a>
-        </div>
-        <div class="mode-card">
-            <h2>困難模式</h2>
-            <p>適合中學生的進階題目！</p>
-            <a href="diff.html" class="btn">開始挑戰</a>
+    <!-- 背景雪花 -->
+    <div class="bg-decoration" id="snow-container"></div>
+    <!-- 聖誕裝飾 -->
+    <div class="christmas-tree">🎄</div>
+    <div class="christmas-bell">🔔</div>
+    <div class="christmas-gift">🎁</div>
+    <div class="christmas-sock">🧦</div>
+
+    <div class="container">
+        <div class="santa-badge">🎅</div>
+
+        <h1>垃圾回收站</h1>
+        <!-- 修复跳转事件 -->
+        <button class="mode-btn nor-btn" onclick="window.location.href='nor.html'">
+            ♻️ 普通模式
+        </button>
+        <button class="mode-btn diff-btn" onclick="window.location.href='diff.html'">
+            🗑️ 困難模式
+        </button>
+
+        <div class="trash-icons">
+            <div class="trash-icon">🧴<span>塑膠</span></div>
+            <div class="trash-icon">📄<span>廢紙</span></div>
+            <div class="trash-icon">🥫<span>金屬</span></div>
         </div>
     </div>
+
+    <script>
+        // 生成雪花
+        function createSnowflakes() {
+            const snowContainer = document.getElementById('snow-container');
+            const snowCount = 70;
+            const snowChars = ['❄️', '❅', '❆'];
+
+            for (let i = 0; i < snowCount; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                snowflake.textContent = snowChars[Math.floor(Math.random() * snowChars.length)];
+
+                const size = Math.random() * 10 + 5;
+                const left = Math.random() * 100;
+                const animationDuration = Math.random() * 25 + 15;
+                const delay = Math.random() * 10;
+
+                snowflake.style.cssText = `
+                    left: ${left}%;
+                    font-size: ${size}px;
+                    animation-duration: ${animationDuration}s;
+                    animation-delay: ${delay}s;
+                `;
+                snowContainer.appendChild(snowflake);
+            }
+        }
+        window.onload = createSnowflakes;
+    </script>
 </body>
 </html>
